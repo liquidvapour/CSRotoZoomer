@@ -115,35 +115,28 @@ namespace CSRotoZoomer
             _zoomOutMax = _zoomInMax*5;
             _yZoomDelta = (imageHeightD/imageWidthD)*_xZoomDelta;
 
+            // use slow getpixel method. This is slow because GetPixel is very slow and also the on-the-fly ARGB conversion. 
+            Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
+
             // read the initial pixels into the srcpixel array. This makes it possible to perform an in-place rendering to avoid memory trashing
-            var srcData = srcImage.LockBits(new Rectangle(0, 0, _imageWidth, _imageHeight), ImageLockMode.ReadWrite,
-                srcImage.PixelFormat);
             switch (srcImage.PixelFormat)
             {
                 case PixelFormat.Format32bppArgb:
                 case PixelFormat.Format32bppPArgb:
                 case PixelFormat.Format32bppRgb:
-                    PopulateSourcePixelsFrom32bpp(srcData, _sourcePixels);
-                    srcImage.UnlockBits(srcData);
+                    PopulateSourcePixelsFrom32bpp(srcImage, _sourcePixels);
                     break;
                 case PixelFormat.Format8bppIndexed:
-                    PopulateSourcePixelsFrom8bpp(srcData, srcImage, _sourcePixels);
-                    srcImage.UnlockBits(srcData);
+                    PopulateSourcePixelsFrom8bpp(srcImage, _sourcePixels);
                     break;
                 default:
-                    // first unlock, as GetPixel will lock/unlock the source for every pixel read... 
-                    srcImage.UnlockBits(srcData);
-
-                    // use slow getpixel method. This is slow because GetPixel is very slow and also the on-the-fly ARGB conversion. 
-                    Cursor = Cursors.WaitCursor;
-                    Application.DoEvents();
-
                     PopulateSourcePixelsDefault(srcImage, _sourcePixels);
-
-                    Cursor = Cursors.Default;
-                    Application.DoEvents();
                     break;
             }
+
+            Cursor = Cursors.Default;
+            Application.DoEvents();
 
             InitializeCoordArrays(imageWidthD, imageHeightD);
 
@@ -173,8 +166,14 @@ namespace CSRotoZoomer
             _ySourceCoords[2] = halfHeightSrc;
         }
 
-        private static unsafe void PopulateSourcePixelsFrom8bpp(BitmapData srcData, Bitmap srcImage, IList<uint> sourcePixels)
+        private static unsafe void PopulateSourcePixelsFrom8bpp(Bitmap srcImage, IList<uint> sourcePixels)
         {
+            var srcData = srcImage.LockBits(
+                new Rectangle(0, 0, srcImage.Width, srcImage.Height),
+                ImageLockMode.ReadWrite,
+                srcImage.PixelFormat);
+
+
             // first convert the palet to uint's (ARGB). This is an operation which needs to be done once, so we don't convert
             // the same color over and over again. 
             var pSrc8bindexed = (byte*) srcData.Scan0;
@@ -191,6 +190,7 @@ namespace CSRotoZoomer
                     sourcePixels[(i * srcImage.Width) + j] = paletteColors[pSrc8bindexed[(i * srcImage.Width) + j]];
                 }
             }
+            srcImage.UnlockBits(srcData);
         }
 
         private static void PopulateSourcePixelsDefault(Bitmap srcImage, IList<uint> sourcePixels)
@@ -205,8 +205,13 @@ namespace CSRotoZoomer
             }
         }
 
-        private static unsafe void PopulateSourcePixelsFrom32bpp(BitmapData srcData, IList<uint> sourcePixels)
+        private static unsafe void PopulateSourcePixelsFrom32bpp(Bitmap srcImage, IList<uint> sourcePixels)
         {
+            var srcData = srcImage.LockBits(
+                new Rectangle(0, 0, srcImage.Width, srcImage.Height), 
+                ImageLockMode.ReadWrite,
+                srcImage.PixelFormat);
+
             var pSrc32bpp = (uint*) srcData.Scan0;
             for (var i = 0; i < srcData.Height; i++)
             {
@@ -215,6 +220,7 @@ namespace CSRotoZoomer
                     sourcePixels[(i * srcData.Width) + j] = pSrc32bpp[(i * srcData.Width) + j];
                 }
             }
+            srcImage.UnlockBits(srcData);
         }
 
         /// <summary>
