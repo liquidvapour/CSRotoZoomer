@@ -205,14 +205,14 @@ namespace CSRotoZoomer
             }
         }
 
-        private unsafe void PopulateSourcePixelsFrom32bpp(BitmapData srcData, IList<uint> sourcePixels)
+        private static unsafe void PopulateSourcePixelsFrom32bpp(BitmapData srcData, IList<uint> sourcePixels)
         {
             var pSrc32bpp = (uint*) srcData.Scan0;
-            for (var i = 0; i < _imageHeight; i++)
+            for (var i = 0; i < srcData.Height; i++)
             {
-                for (var j = 0; j < _imageWidth; j++)
+                for (var j = 0; j < srcData.Width; j++)
                 {
-                    sourcePixels[(i*_imageWidth) + j] = pSrc32bpp[(i*_imageWidth) + j];
+                    sourcePixels[(i * srcData.Width) + j] = pSrc32bpp[(i * srcData.Width) + j];
                 }
             }
         }
