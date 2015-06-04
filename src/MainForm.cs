@@ -7,6 +7,7 @@
 ///////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -122,7 +123,7 @@ namespace CSRotoZoomer
                 case PixelFormat.Format32bppArgb:
                 case PixelFormat.Format32bppPArgb:
                 case PixelFormat.Format32bppRgb:
-                    PopulateSourcePixelsFrom32bpp(srcData);
+                    PopulateSourcePixelsFrom32bpp(srcData, _sourcePixels);
                     srcImage.UnlockBits(srcData);
                     break;
                 case PixelFormat.Format8bppIndexed:
@@ -204,14 +205,14 @@ namespace CSRotoZoomer
             }
         }
 
-        private unsafe void PopulateSourcePixelsFrom32bpp(BitmapData srcData)
+        private unsafe void PopulateSourcePixelsFrom32bpp(BitmapData srcData, IList<uint> sourcePixels)
         {
             var pSrc32bpp = (uint*) srcData.Scan0;
             for (var i = 0; i < _imageHeight; i++)
             {
                 for (var j = 0; j < _imageWidth; j++)
                 {
-                    _sourcePixels[(i*_imageWidth) + j] = pSrc32bpp[(i*_imageWidth) + j];
+                    sourcePixels[(i*_imageWidth) + j] = pSrc32bpp[(i*_imageWidth) + j];
                 }
             }
         }
