@@ -107,7 +107,6 @@ namespace CSRotoZoomer
 
             double imageWidthD = _imageWidth;
             double imageHeightD = _imageHeight;
-            _sourcePixels = new uint[_imageWidth*_imageHeight];
             if (_xZoomDelta != 0)
             {
                 _zoomInMax = (int) (((imageWidthD/2.0)/_xZoomDelta) - 10.0);
@@ -119,32 +118,38 @@ namespace CSRotoZoomer
             Cursor = Cursors.WaitCursor;
             Application.DoEvents();
 
-            // read the initial pixels into the srcpixel array. This makes it possible to perform an in-place rendering to avoid memory trashing
-            switch (srcImage.PixelFormat)
-            {
-                case PixelFormat.Format32bppArgb:
-                case PixelFormat.Format32bppPArgb:
-                case PixelFormat.Format32bppRgb:
-                    PopulateSourcePixelsFrom32bpp(srcImage, _sourcePixels);
-                    break;
-                case PixelFormat.Format8bppIndexed:
-                    PopulateSourcePixelsFrom8bpp(srcImage, _sourcePixels);
-                    break;
-                default:
-                    PopulateSourcePixelsDefault(srcImage, _sourcePixels);
-                    break;
-            }
+            _sourcePixels = CreatePixelArrayFrom(srcImage);
 
             Cursor = Cursors.Default;
             Application.DoEvents();
 
             InitializeCoordArrays(imageWidthD, imageHeightD);
 
-
             _animTimer.Enabled = true;
             _fpsTimer.Enabled = true;
             _animTimer.Start();
             _fpsTimer.Start();
+        }
+
+        private static uint[] CreatePixelArrayFrom(Bitmap srcImage)
+        {
+            var sourcePixels = new uint[srcImage.Width*srcImage.Height];
+            // read the initial pixels into the srcpixel array. This makes it possible to perform an in-place rendering to avoid memory trashing
+            switch (srcImage.PixelFormat)
+            {
+                case PixelFormat.Format32bppArgb:
+                case PixelFormat.Format32bppPArgb:
+                case PixelFormat.Format32bppRgb:
+                    PopulateSourcePixelsFrom32bpp(srcImage, sourcePixels);
+                    break;
+                case PixelFormat.Format8bppIndexed:
+                    PopulateSourcePixelsFrom8bpp(srcImage, sourcePixels);
+                    break;
+                default:
+                    PopulateSourcePixelsDefault(srcImage, sourcePixels);
+                    break;
+            }
+            return sourcePixels;
         }
 
         private void InitializeCoordArrays(double imageWidthD, double imageHeightD)
