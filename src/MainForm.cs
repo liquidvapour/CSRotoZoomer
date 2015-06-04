@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -32,13 +31,13 @@ namespace CSRotoZoomer
         private readonly double[] _yDestinationCoords = { -64, -64, 64 };
 
         private uint[] _sourcePixels;
-        private readonly PixelArrayFactory _pixelArrayFactory;
+        private readonly BitmapToUint32ArrayMapper _bitmapToUint32ArrayMapper;
 
         /// <summary>
         ///     CTor
         /// </summary>
-        /// <param name="pixelArrayFactory"></param>
-        public MainForm(PixelArrayFactory pixelArrayFactory)
+        /// <param name="bitmapToUint32ArrayMapper"></param>
+        public MainForm(BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper)
         {
             InitializeComponent();
 
@@ -53,7 +52,7 @@ namespace CSRotoZoomer
             _timeCurrentFrame = DateTime.Now;
             _timePreviousFrame = _timeCurrentFrame;
 
-            _pixelArrayFactory = pixelArrayFactory;
+            _bitmapToUint32ArrayMapper = bitmapToUint32ArrayMapper;
         }
 
         /// <summary>
@@ -118,11 +117,10 @@ namespace CSRotoZoomer
             _zoomOutMax = _zoomInMax*5;
             _yZoomDelta = (imageHeightD/imageWidthD)*_xZoomDelta;
 
-            // use slow getpixel method. This is slow because GetPixel is very slow and also the on-the-fly ARGB conversion. 
             Cursor = Cursors.WaitCursor;
             Application.DoEvents();
 
-            _sourcePixels = _pixelArrayFactory.CreatePixelArrayFrom(srcImage);
+            _sourcePixels = _bitmapToUint32ArrayMapper.MapToUint32ArrayFrom(srcImage);
 
             Cursor = Cursors.Default;
             Application.DoEvents();

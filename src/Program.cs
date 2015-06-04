@@ -22,7 +22,7 @@ namespace CSRotoZoomer
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
 			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler( Application_ThreadException );
-			Application.Run( new MainForm(new PixelArrayFactory()) );
+			Application.Run( new MainForm(new BitmapToUint32ArrayMapper()) );
 		}
 
 		/// <summary>

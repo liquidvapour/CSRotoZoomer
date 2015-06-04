@@ -4,9 +4,9 @@ using System.Drawing.Imaging;
 
 namespace CSRotoZoomer
 {
-    public class PixelArrayFactory
+    public class BitmapToUint32ArrayMapper
     {
-        public uint[] CreatePixelArrayFrom(Bitmap srcImage)
+        public uint[] MapToUint32ArrayFrom(Bitmap srcImage)
         {
             var sourcePixels = new uint[srcImage.Width*srcImage.Height];
             // read the initial pixels into the srcpixel array. This makes it possible to perform an in-place rendering to avoid memory trashing
@@ -34,16 +34,15 @@ namespace CSRotoZoomer
                 ImageLockMode.ReadWrite,
                 srcImage.PixelFormat);
 
-
             // first convert the palet to uint's (ARGB). This is an operation which needs to be done once, so we don't convert
             // the same color over and over again. 
-            var pSrc8bindexed = (byte*) srcData.Scan0;
             var paletteColors = new uint[srcImage.Palette.Entries.Length];
             for (var i = 0; i < srcImage.Palette.Entries.Length; i++)
             {
                 paletteColors[i] = (uint) srcImage.Palette.Entries[i].ToArgb();
             }
             // now convert the pixels to uints
+            var pSrc8bindexed = (byte*)srcData.Scan0;
             for (var i = 0; i < srcImage.Height; i++)
             {
                 for (var j = 0; j < srcImage.Width; j++)
@@ -56,6 +55,7 @@ namespace CSRotoZoomer
 
         private static void PopulateSourcePixelsDefault(Bitmap srcImage, IList<uint> sourcePixels)
         {
+            // use slow getpixel method. This is slow because GetPixel is very slow and also the on-the-fly ARGB conversion. 
             for (var i = 0; i < srcImage.Height; i++)
             {
                 for (var j = 0; j < srcImage.Width; j++)
