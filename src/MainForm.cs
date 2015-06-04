@@ -127,7 +127,7 @@ namespace CSRotoZoomer
                     srcImage.UnlockBits(srcData);
                     break;
                 case PixelFormat.Format8bppIndexed:
-                    PopulateSourcePixelsFrom8bpp(srcData, srcImage);
+                    PopulateSourcePixelsFrom8bpp(srcData, srcImage, _sourcePixels);
                     srcImage.UnlockBits(srcData);
                     break;
                 default:
@@ -138,7 +138,7 @@ namespace CSRotoZoomer
                     Cursor = Cursors.WaitCursor;
                     Application.DoEvents();
 
-                    PopulateSourcePixelsDefault(srcImage);
+                    PopulateSourcePixelsDefault(srcImage, _sourcePixels);
 
                     Cursor = Cursors.Default;
                     Application.DoEvents();
@@ -173,7 +173,7 @@ namespace CSRotoZoomer
             _ySourceCoords[2] = halfHeightSrc;
         }
 
-        private unsafe void PopulateSourcePixelsFrom8bpp(BitmapData srcData, Bitmap srcImage)
+        private static unsafe void PopulateSourcePixelsFrom8bpp(BitmapData srcData, Bitmap srcImage, IList<uint> sourcePixels)
         {
             // first convert the palet to uint's (ARGB). This is an operation which needs to be done once, so we don't convert
             // the same color over and over again. 
@@ -184,23 +184,23 @@ namespace CSRotoZoomer
                 paletteColors[i] = (uint) srcImage.Palette.Entries[i].ToArgb();
             }
             // now convert the pixels to uints
-            for (var i = 0; i < _imageHeight; i++)
+            for (var i = 0; i < srcImage.Height; i++)
             {
-                for (var j = 0; j < _imageWidth; j++)
+                for (var j = 0; j < srcImage.Width; j++)
                 {
-                    _sourcePixels[(i*_imageWidth) + j] = paletteColors[pSrc8bindexed[(i*_imageWidth) + j]];
+                    sourcePixels[(i * srcImage.Width) + j] = paletteColors[pSrc8bindexed[(i * srcImage.Width) + j]];
                 }
             }
         }
 
-        private void PopulateSourcePixelsDefault(Bitmap srcImage)
+        private static void PopulateSourcePixelsDefault(Bitmap srcImage, IList<uint> sourcePixels)
         {
-            for (var i = 0; i < _imageHeight; i++)
+            for (var i = 0; i < srcImage.Height; i++)
             {
-                for (var j = 0; j < _imageWidth; j++)
+                for (var j = 0; j < srcImage.Width; j++)
                 {
                     var pixel = srcImage.GetPixel(j, i);
-                    _sourcePixels[(i*_imageWidth) + j] = (uint) pixel.ToArgb();
+                    sourcePixels[(i * srcImage.Width) + j] = (uint)pixel.ToArgb();
                 }
             }
         }
