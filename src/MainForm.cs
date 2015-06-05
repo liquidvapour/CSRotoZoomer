@@ -199,11 +199,16 @@ namespace CSRotoZoomer
                 _resetCanvas = false;
             }
 
+            UpdateAndDraw();
+
+            Invalidate();
+        }
+
+        private void UpdateAndDraw()
+        {
             Zoom();
             Rotate();
             Animate();
-
-            Invalidate();
         }
 
         /// <summary>
@@ -375,16 +380,6 @@ namespace CSRotoZoomer
                 _xDestinationCoords[i] = (xn*cosG) - (yn*sinG);
                 _yDestinationCoords[i] = (yn*cosG) + (xn*sinG);
             }
-        }
-
-        /// <summary>
-        ///     Handles the Click event of the _closeButton control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-        private void _closeButton_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         /// <summary>
