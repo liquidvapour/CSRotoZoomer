@@ -15,44 +15,24 @@ namespace CSRotoZoomer
 {
     public partial class MainForm : Form
     {
-        private int _canvasWidth, _canvasHeight, _zoomCounter, _zoomInMax, _zoomOutMax, _imageWidth, _imageHeight;
-        private Bitmap _renderCanvas;
-        private bool _zoomIn, _resetCanvas;
-        private double _gamma, _deltaGamma, _xZoomDelta, _yZoomDelta;
+        private readonly RotoZoomer _rotoZoomer;
         private string _fpsString, _canvasSizeString, _imageSizeString, _imageInfoString;
         private DateTime _timeCurrentFrame, _timePreviousFrame;
 
-        // coordinate source.
-        private readonly double[] _xSourceCoords = { -128, 128, -128 };
-        private readonly double[] _ySourceCoords = { -64, -64, 64 };
-
-        // coordinate destination. (for drawing).
-        private readonly double[] _xDestinationCoords = { -128, 128, -128 };
-        private readonly double[] _yDestinationCoords = { -64, -64, 64 };
-
-        private uint[] _sourcePixels;
-        private readonly BitmapToUint32ArrayMapper _bitmapToUint32ArrayMapper;
-
-        /// <summary>
-        ///     CTor
-        /// </summary>
-        /// <param name="bitmapToUint32ArrayMapper"></param>
         public MainForm(BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper)
         {
             InitializeComponent();
 
             // be sure this dialog uses double buffered rendering
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
-
-            _resetCanvas = false;
+            _rotoZoomer = new RotoZoomer(bitmapToUint32ArrayMapper);
+            _rotoZoomer.ResizeCanvas(_renderDestination.Bounds);
             _fpsString = string.Empty;
             _canvasSizeString = string.Empty;
             _imageSizeString = string.Empty;
             _imageInfoString = string.Empty;
             _timeCurrentFrame = DateTime.Now;
             _timePreviousFrame = _timeCurrentFrame;
-
-            _bitmapToUint32ArrayMapper = bitmapToUint32ArrayMapper;
         }
 
         /// <summary>
@@ -74,7 +54,12 @@ namespace CSRotoZoomer
             Cursor = Cursors.WaitCursor;
             Application.DoEvents();
             // user has specified a filename, load the image and start the rotozoomer
-            InitRotoZoomer(_openImageDialog.FileName);
+            string filename = _openImageDialog.FileName;
+            var srcImage = new Bitmap(filename);
+            _rotoZoomer.InitRotoZoomer(srcImage);
+
+            _imageInfoString = _openImageDialog.FileName;
+            _imageSizeString = string.Format("Image: {0} x {1}", srcImage.Width, srcImage.Height);
 
             Cursor = Cursors.Default;
             Application.DoEvents();
@@ -87,18 +72,129 @@ namespace CSRotoZoomer
         }
 
         /// <summary>
+        ///     Handles the Tick event of the _animTimer control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+        private void _animTimer_Tick(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized) return;
+
+            _timePreviousFrame = _timeCurrentFrame;
+            _timeCurrentFrame = DateTime.Now;
+
+            _rotoZoomer.UpdateAndDraw();
+
+            Invalidate();
+        }
+
+        /// <summary>
+        ///     Handles the Resize event of the MainForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            // set a new canvas so the destination render canvas is resized as well.
+            _rotoZoomer.ResizeCanvas(_renderDestination.Bounds);
+            _canvasSizeString = string.Format("Canvas: {0} x {1}", _renderDestination.Width, _renderDestination.Height);
+        }
+
+        /// <summary>
+        ///     Handles the Paint event of the MainForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.Forms.PaintEventArgs" /> instance containing the event data.</param>
+        private void MainForm_Paint(object sender, PaintEventArgs e)
+        {
+            // draw the new frame onto the form.
+            _rotoZoomer.RenderUsing(e.Graphics);
+            UpdateStatusBar();
+        }
+
+        /// <summary>
+        ///     Updates the status bar elements
+        /// </summary>
+        private void UpdateStatusBar()
+        {
+            _fpsLabel.Text = _fpsString;
+            _canvasSizeLabel.Text = _canvasSizeString;
+            _imageSizeLabel.Text = _imageSizeString;
+            _imageInfoLabel.Text = _imageInfoString;
+        }
+
+
+        /// <summary>
+        ///     Handles the Click event of the exitToolStripMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        ///     Handles the Tick event of the _fpsTimer control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+        private void _fpsTimer_Tick(object sender, EventArgs e)
+        {
+            var millisecondsBetweenFrames = _timeCurrentFrame.Subtract(_timePreviousFrame).Milliseconds;
+            if (millisecondsBetweenFrames == 0)
+            {
+                _fpsString = "0 frames/sec";
+            }
+            else
+            {
+                _fpsString = string.Format("{0} frames / sec", (1000.0f / millisecondsBetweenFrames).ToString(".00"));
+            }
+        }
+
+
+    }
+
+    public class RotoZoomer
+    {
+        private int _canvasWidth, _canvasHeight, _zoomCounter, _zoomInMax, _zoomOutMax, _imageWidth, _imageHeight;
+        private Bitmap _renderCanvas;
+        private bool _zoomIn;
+        private double _gamma, _deltaGamma, _xZoomDelta, _yZoomDelta;
+
+        // coordinate source.
+        private readonly double[] _xSourceCoords = { -128, 128, -128 };
+        private readonly double[] _ySourceCoords = { -64, -64, 64 };
+
+        // coordinate destination. (for drawing).
+        private readonly double[] _xDestinationCoords = { -128, 128, -128 };
+        private readonly double[] _yDestinationCoords = { -64, -64, 64 };
+
+        private uint[] _sourcePixels;
+        private readonly BitmapToUint32ArrayMapper _bitmapToUint32ArrayMapper;
+        private Rectangle _renderDestination;
+        private bool _resetCanvas;
+
+        /// <summary>
+        ///     CTor
+        /// </summary>
+        /// <param name="bitmapToUint32ArrayMapper"></param>
+        public RotoZoomer(BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper)
+        {
+            _bitmapToUint32ArrayMapper = bitmapToUint32ArrayMapper;
+        }
+
+
+        /// <summary>
         ///     Initializes the roto zoomer.
         /// </summary>
-        private void InitRotoZoomer(string filename)
+        public void InitRotoZoomer(Bitmap srcImage)
         {
             CreateCanvas();
 
             // load bitmap specified by the user.
-            var srcImage = new Bitmap(filename);
             _imageWidth = srcImage.Width;
             _imageHeight = srcImage.Height;
-            _imageInfoString = filename;
-            _imageSizeString = string.Format("Image: {0} x {1}", _imageWidth, _imageHeight);
 
             // initialize our parameters.
             _zoomCounter = 0;
@@ -158,13 +254,8 @@ namespace CSRotoZoomer
         /// <summary>
         ///     Creates a new render canvas, which will be used to render the picture in for every frame.
         /// </summary>
-        private void CreateCanvas()
+        public void CreateCanvas()
         {
-            if (WindowState == FormWindowState.Minimized)
-            {
-                return;
-            }
-
             if (_renderCanvas != null)
             {
                 _renderCanvas.Dispose();
@@ -186,15 +277,11 @@ namespace CSRotoZoomer
             _yDestinationCoords[1] = -halfHeightDst;
             _yDestinationCoords[2] = halfHeightDst;
 
-            _canvasSizeString = string.Format("Canvas: {0} x {1}", _canvasWidth, _canvasHeight);
+            
         }
 
-        /// <summary>
-        ///     Handles the Tick event of the _animTimer control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-        private void _animTimer_Tick(object sender, EventArgs e)
+
+        public void UpdateAndDraw()
         {
             if (_resetCanvas)
             {
@@ -202,13 +289,7 @@ namespace CSRotoZoomer
                 _resetCanvas = false;
             }
 
-            UpdateAndDraw();
 
-            Invalidate();
-        }
-
-        private void UpdateAndDraw()
-        {
             Zoom();
             Rotate();
             Animate();
@@ -282,8 +363,6 @@ namespace CSRotoZoomer
         /// </summary>
         private void Animate()
         {
-            _timePreviousFrame = _timeCurrentFrame;
-            _timeCurrentFrame = DateTime.Now;
 
             var xa = _xDestinationCoords[0];
             var xb = _xDestinationCoords[1];
@@ -385,71 +464,22 @@ namespace CSRotoZoomer
             }
         }
 
-        /// <summary>
-        ///     Handles the Resize event of the MainForm control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-        private void MainForm_Resize(object sender, EventArgs e)
-        {
-            // set a new canvas so the destination render canvas is resized as well.
-            _resetCanvas = true;
-        }
-
-        /// <summary>
-        ///     Handles the Paint event of the MainForm control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Forms.PaintEventArgs" /> instance containing the event data.</param>
-        private void MainForm_Paint(object sender, PaintEventArgs e)
+        public void RenderUsing(Graphics graphics)
         {
             if (_renderCanvas == null)
             {
                 // no canvas created, no drawing to be done
                 return;
             }
-            // draw the new frame onto the form.
-            e.Graphics.DrawImageUnscaled(_renderCanvas, _renderDestination.Left, _renderDestination.Top);
-            UpdateStatusBar();
+
+            graphics.DrawImageUnscaled(_renderCanvas, _renderDestination.Left, _renderDestination.Top);
+
         }
 
-        /// <summary>
-        ///     Updates the status bar elements
-        /// </summary>
-        private void UpdateStatusBar()
+        public void ResizeCanvas(Rectangle clientRectangle)
         {
-            _fpsLabel.Text = _fpsString;
-            _canvasSizeLabel.Text = _canvasSizeString;
-            _imageSizeLabel.Text = _imageSizeString;
-            _imageInfoLabel.Text = _imageInfoString;
-        }
-
-        /// <summary>
-        ///     Handles the Tick event of the _fpsTimer control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-        private void _fpsTimer_Tick(object sender, EventArgs e)
-        {
-            var millisecondsBetweenFrames = _timeCurrentFrame.Subtract(_timePreviousFrame).Milliseconds;
-            if (millisecondsBetweenFrames == 0)
-            {
-                _fpsString = "0 frames/sec";
-            }
-            else
-            {
-                _fpsString = string.Format("{0} frames / sec", (1000.0f/millisecondsBetweenFrames).ToString(".00"));
-            }
-        }
-
-        /// <summary>
-        ///     Handles the Click event of the exitToolStripMenuItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
+            _resetCanvas = true;
+            _renderDestination = clientRectangle;
         }
     }
 }
