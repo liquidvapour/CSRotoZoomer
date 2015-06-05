@@ -5,15 +5,16 @@
 // 
 // Effect invented by Chaos / Sanity in 1989 on the Amiga 500
 ///////////////////////////////////////////////////////////////////
+
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CSRotoZoomer
 {
 	/// <summary>
 	/// Class to start the app.
-	/// </summary>
+	/// </summary> 
 	static class Program
 	{
 		[STAThread]
@@ -21,8 +22,9 @@ namespace CSRotoZoomer
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler( Application_ThreadException );
-			Application.Run( new MainForm(new BitmapToUint32ArrayMapper()) );
+			Application.ThreadException += Application_ThreadException;
+		    BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper = new BitmapToUint32ArrayMapper();
+		    Application.Run( new MainForm(new RotoZoomer(bitmapToUint32ArrayMapper)) );
 		}
 
 		/// <summary>
@@ -30,7 +32,7 @@ namespace CSRotoZoomer
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.Threading.ThreadExceptionEventArgs"/> instance containing the event data.</param>
-		static void Application_ThreadException( object sender, System.Threading.ThreadExceptionEventArgs e )
+		static void Application_ThreadException( object sender, ThreadExceptionEventArgs e )
 		{
 			DialogResult result = MessageBox.Show( string.Format("Exception caught: {0}{1}{1}StackTrace:{1}{2}{1}{1}Do you want to abort the application?", e.Exception.Message, Environment.NewLine, e.Exception.StackTrace), 
 				"Exception caught", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1 );
