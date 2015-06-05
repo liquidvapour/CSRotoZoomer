@@ -68,8 +68,22 @@ namespace CSRotoZoomer
                 return;
             }
 
+            _fpsTimer.Enabled = false;
+            _animTimer.Enabled = false;
+
+            Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
             // user has specified a filename, load the image and start the rotozoomer
             InitRotoZoomer(_openImageDialog.FileName);
+
+            Cursor = Cursors.Default;
+            Application.DoEvents();
+
+            _animTimer.Enabled = true;
+            _fpsTimer.Enabled = true;
+            _animTimer.Start();
+            _fpsTimer.Start();
+
         }
 
         /// <summary>
@@ -77,8 +91,6 @@ namespace CSRotoZoomer
         /// </summary>
         private void InitRotoZoomer(string filename)
         {
-            _fpsTimer.Enabled = false;
-            _animTimer.Enabled = false;
             CreateCanvas();
 
             // load bitmap specified by the user.
@@ -117,20 +129,11 @@ namespace CSRotoZoomer
             _zoomOutMax = _zoomInMax*5;
             _yZoomDelta = (imageHeightD/imageWidthD)*_xZoomDelta;
 
-            Cursor = Cursors.WaitCursor;
-            Application.DoEvents();
 
             _sourcePixels = _bitmapToUint32ArrayMapper.MapToUint32ArrayFrom(srcImage);
 
-            Cursor = Cursors.Default;
-            Application.DoEvents();
-
             InitializeCoordArrays(imageWidthD, imageHeightD);
 
-            _animTimer.Enabled = true;
-            _fpsTimer.Enabled = true;
-            _animTimer.Start();
-            _fpsTimer.Start();
         }
 
         private void InitializeCoordArrays(double imageWidthD, double imageHeightD)
