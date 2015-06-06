@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bitmap32bppToUint32ArrayMapper.cs" />
+    <Compile Include="Bitmap8bppToUint32ArrayMapper.cs" />
+    <Compile Include="DefaultBitmapToUint32Mapper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
