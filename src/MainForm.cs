@@ -25,17 +25,21 @@ namespace CSRotoZoomer
             InitializeComponent();
 
             // be sure this dialog uses double buffered rendering
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.ResizeRedraw, false);
 
             _rotoZoomer = rotoZoomer;
-            _rotoZoomer.ResizeCanvas(_renderDestination.Bounds);
 
+            bindingSource.DataSource = new RotoZoomerViewModel(_rotoZoomer);
+            
             _fpsString = string.Empty;
             _canvasSizeString = string.Empty;
             _imageSizeString = string.Empty;
             _imageInfoString = string.Empty;
             _timeCurrentFrame = DateTime.Now;
             _timePreviousFrame = _timeCurrentFrame;
+
+            ResizeCanvas();
         }
 
         /// <summary>
@@ -116,7 +120,13 @@ namespace CSRotoZoomer
         /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            // set a new canvas so the destination render canvas is resized as well.
+            ResizeCanvas();
+        }
+
+        private void ResizeCanvas()
+        {
+            if (_rotoZoomer == null) return;
+
             _rotoZoomer.ResizeCanvas(_renderDestination.Bounds);
             _canvasSizeString = string.Format("Canvas: {0} x {1}", _renderDestination.Width, _renderDestination.Height);
         }

@@ -10,7 +10,8 @@ namespace CSRotoZoomer
         private int _canvasWidth, _canvasHeight, _zoomCounter, _zoomInMax, _zoomOutMax, _imageWidth, _imageHeight;
         private Bitmap _renderCanvas;
         private bool _zoomIn;
-        private double _gamma, _deltaGamma, _xZoomDelta, _yZoomDelta;
+        private double _gamma;
+        private double _xZoomDelta, _yZoomDelta;
 
         // coordinate source.
         private readonly double[] _xSourceCoords = { -128, 128, -128 };
@@ -25,6 +26,8 @@ namespace CSRotoZoomer
         private Rectangle _renderDestination;
         private bool _resetCanvas;
 
+        public double DeltaGamma { get; set; }
+
         /// <summary>
         ///     CTor
         /// </summary>
@@ -32,6 +35,9 @@ namespace CSRotoZoomer
         public RotoZoomer(BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper)
         {
             _bitmapToUint32ArrayMapper = bitmapToUint32ArrayMapper;
+
+            // deltaGamma value, controls rotation.
+            DeltaGamma = 60.0;
         }
 
 
@@ -50,8 +56,6 @@ namespace CSRotoZoomer
             _zoomCounter = 0;
             _zoomIn = false;
 
-            // deltaGamma value, controls rotation.
-            _deltaGamma = 60.0;
 
             // deltas for x and y zooming. If they're not the same the image gets stretched.
             _xZoomDelta = 2.0;
@@ -299,7 +303,8 @@ namespace CSRotoZoomer
         {
             Debug.Print("deltaTimeInSeconds: {0}", dt);
             // first update the angle. only gamma is interesting...
-            _gamma = (_gamma + (_deltaGamma * dt))%360;
+            _gamma = (_gamma + (DeltaGamma * dt))%360;
+            Debug.Print("new gamma: {0}", _gamma);
             var gammaRad = (_gamma/360)*2*Math.PI;
 
             var sinG = Math.Sin(gammaRad);
