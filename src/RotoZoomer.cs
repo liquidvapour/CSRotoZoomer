@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -50,7 +51,7 @@ namespace CSRotoZoomer
             _zoomIn = false;
 
             // deltaGamma value, controls rotation.
-            _deltaGamma = 2.0;
+            _deltaGamma = 60.0;
 
             // deltas for x and y zooming. If they're not the same the image gets stretched.
             _xZoomDelta = 2.0;
@@ -130,7 +131,7 @@ namespace CSRotoZoomer
         }
 
 
-        public void Update()
+        public void Update(double deltaTimeInSeconds)
         {
             if (_resetCanvas)
             {
@@ -138,35 +139,38 @@ namespace CSRotoZoomer
                 _resetCanvas = false;
             }
 
-            Zoom();
-            Rotate();
+            Zoom(deltaTimeInSeconds);
+            Rotate(deltaTimeInSeconds);
             Animate();
         }
 
         /// <summary>
         ///     Controls the zoom parameters, used by Animate()
         /// </summary>
-        private void Zoom()
+        /// <param name="deltaTimeInSeconds"></param>
+        private void Zoom(double deltaTimeInSeconds)
         {
+            var xZoomDeltaThisFrame = _xZoomDelta*deltaTimeInSeconds;
+            var yZoomDeltaThisFrame = _yZoomDelta*deltaTimeInSeconds;
             if (_zoomIn)
             {
                 for (var i = 0; i < 3; i++)
                 {
                     if (_xSourceCoords[i] < 0)
                     {
-                        _xSourceCoords[i] += _xZoomDelta;
+                        _xSourceCoords[i] += xZoomDeltaThisFrame;
                     }
                     else
                     {
-                        _xSourceCoords[i] -= _xZoomDelta;
+                        _xSourceCoords[i] -= xZoomDeltaThisFrame;
                     }
                     if (_ySourceCoords[i] < 0)
                     {
-                        _ySourceCoords[i] += _yZoomDelta;
+                        _ySourceCoords[i] += yZoomDeltaThisFrame;
                     }
                     else
                     {
-                        _ySourceCoords[i] -= _yZoomDelta;
+                        _ySourceCoords[i] -= yZoomDeltaThisFrame;
                     }
                 }
                 _zoomCounter++;
@@ -181,19 +185,19 @@ namespace CSRotoZoomer
                 {
                     if (_xSourceCoords[i] < 0)
                     {
-                        _xSourceCoords[i] -= _xZoomDelta;
+                        _xSourceCoords[i] -= xZoomDeltaThisFrame;
                     }
                     else
                     {
-                        _xSourceCoords[i] += _xZoomDelta;
+                        _xSourceCoords[i] += xZoomDeltaThisFrame;
                     }
                     if (_ySourceCoords[i] < 0)
                     {
-                        _ySourceCoords[i] -= _yZoomDelta;
+                        _ySourceCoords[i] -= yZoomDeltaThisFrame;
                     }
                     else
                     {
-                        _ySourceCoords[i] += _yZoomDelta;
+                        _ySourceCoords[i] += yZoomDeltaThisFrame;
                     }
                 }
                 _zoomCounter--;
@@ -291,10 +295,11 @@ namespace CSRotoZoomer
         /// <summary>
         ///     Rotate the rectangle which is used to read the sourcepixels from the source image.
         /// </summary>
-        public void Rotate()
+        public void Rotate(double dt)
         {
+            Debug.Print("deltaTimeInSeconds: {0}", dt);
             // first update the angle. only gamma is interesting...
-            _gamma = (_gamma + _deltaGamma)%360;
+            _gamma = (_gamma + (_deltaGamma * dt))%360;
             var gammaRad = (_gamma/360)*2*Math.PI;
 
             var sinG = Math.Sin(gammaRad);

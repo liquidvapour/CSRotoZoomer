@@ -102,7 +102,9 @@ namespace CSRotoZoomer
             _timePreviousFrame = _timeCurrentFrame;
             _timeCurrentFrame = DateTime.Now;
 
-            _rotoZoomer.Update();
+            var dt = (_timeCurrentFrame - _timePreviousFrame).TotalMilliseconds * 0.001;
+
+            _rotoZoomer.Update(dt);
 
             Invalidate();
         }

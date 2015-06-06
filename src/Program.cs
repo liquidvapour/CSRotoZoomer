@@ -56,12 +56,13 @@ namespace CSRotoZoomer
         /// <param name="e">The <see cref="System.Threading.ThreadExceptionEventArgs"/> instance containing the event data.</param>
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            DialogResult result =
-                MessageBox.Show(
-                    string.Format(
-                        "Exception caught: {0}{1}{1}StackTrace:{1}{2}{1}{1}Do you want to abort the application?",
-                        e.Exception.Message, Environment.NewLine, e.Exception.StackTrace),
-                    "Exception caught", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            var result =MessageBox.Show(
+                string.Format(
+                    "Exception caught: {0}{1}{1}StackTrace:{1}{2}{1}{1}Do you want to abort the application?",
+                    e.Exception.Message, 
+                    Environment.NewLine, 
+                    e.Exception.StackTrace),
+                "Exception caught", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
 
             if (result == DialogResult.Yes)
             {
