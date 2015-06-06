@@ -10,7 +10,7 @@ namespace CSRotoZoomer.BitmapMappers
         {
             var srcData = srcImage.LockBits(
                 new Rectangle(0, 0, srcImage.Width, srcImage.Height),
-                ImageLockMode.ReadWrite,
+                ImageLockMode.ReadOnly,
                 srcImage.PixelFormat);
 
             // first convert the palet to uint's (ARGB). This is an operation which needs to be done once, so we don't convert

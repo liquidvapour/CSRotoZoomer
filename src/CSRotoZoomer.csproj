@@ -44,14 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitmapLoadStrategy.cs" />
     <Compile Include="BitmapMappers\Bitmap32bppToUint32ArrayMapper.cs" />
     <Compile Include="BitmapMappers\Bitmap8bppToUint32ArrayMapper.cs" />
-    <Compile Include="BitmapMappers\BitmapLoadStrategy.cs" />
     <Compile Include="BitmapMappers\DefaultBitmapToUint32Mapper.cs" />
-    <Compile Include="BitmapMappers\IMapBitmapToInt32Array.cs" />
     <Compile Include="BitmapToUint32ArrayMapper.cs" />
     <Compile Include="EnumerableExtentions.cs" />
     <Compile Include="Futures.cs" />
+    <Compile Include="IMapBitmapToInt32Array.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

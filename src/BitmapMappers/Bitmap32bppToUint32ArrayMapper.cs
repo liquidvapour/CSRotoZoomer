@@ -10,7 +10,7 @@ namespace CSRotoZoomer.BitmapMappers
         {
             var srcData = srcImage.LockBits(
                 new Rectangle(0, 0, srcImage.Width, srcImage.Height), 
-                ImageLockMode.ReadWrite,
+                ImageLockMode.ReadOnly,
                 srcImage.PixelFormat);
 
             var pSrc32bpp = (uint*) srcData.Scan0;

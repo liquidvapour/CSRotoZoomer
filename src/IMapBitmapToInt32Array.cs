@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace CSRotoZoomer.BitmapMappers
+namespace CSRotoZoomer
 {
     public interface IMapBitmapToInt32Array
     {

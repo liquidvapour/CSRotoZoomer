@@ -1,6 +1,6 @@
 using System.Drawing.Imaging;
 
-namespace CSRotoZoomer.BitmapMappers
+namespace CSRotoZoomer
 {
     public class BitmapLoadStrategy
     {
