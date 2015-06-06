@@ -130,7 +130,7 @@ namespace CSRotoZoomer
         }
 
 
-        public void UpdateAndDraw()
+        public void Update()
         {
             if (_resetCanvas)
             {

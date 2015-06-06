@@ -14,11 +14,12 @@ namespace CSRotoZoomer.BitmapMappers
                 srcImage.PixelFormat);
 
             var pSrc32bpp = (uint*) srcData.Scan0;
+            var width = srcData.Width;
             for (var i = 0; i < srcData.Height; i++)
             {
-                for (var j = 0; j < srcData.Width; j++)
+                for (var j = 0; j < width; j++)
                 {
-                    sourcePixels[(i * srcData.Width) + j] = pSrc32bpp[(i * srcData.Width) + j];
+                    sourcePixels[(i * width) + j] = pSrc32bpp[(i * width) + j];
                 }
             }
             srcImage.UnlockBits(srcData);

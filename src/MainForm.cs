@@ -8,6 +8,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CSRotoZoomer
@@ -17,6 +18,7 @@ namespace CSRotoZoomer
         private readonly RotoZoomer _rotoZoomer;
         private string _fpsString, _canvasSizeString, _imageSizeString, _imageInfoString;
         private DateTime _timeCurrentFrame, _timePreviousFrame;
+        private Bitmap _srcImage;
 
         public MainForm(RotoZoomer rotoZoomer)
         {
@@ -53,23 +55,39 @@ namespace CSRotoZoomer
             _animTimer.Enabled = false;
 
             Cursor = Cursors.WaitCursor;
-            Application.DoEvents();
+            //Application.DoEvents();
             // user has specified a filename, load the image and start the rotozoomer
             var filename = _openImageDialog.FileName;
-            var srcImage = new Bitmap(filename);
-            _rotoZoomer.InitRotoZoomer(srcImage);
+            _srcImage = new Bitmap(filename);
 
+            ThreadPool.QueueUserWorkItem(InitRotoZoomer, _srcImage);
+        }
+
+
+        private void InitRotoZoomer(object _)
+        {
+            _rotoZoomer.InitRotoZoomer(_srcImage);
+
+            
+            // Called on another thread so needs to BeginInvoke starting 
+            // animation so it happens on the UI thread.
+            BeginInvoke(new Action(StartAnamating));
+        }
+
+        private void StartAnamating()
+        {
             _imageInfoString = _openImageDialog.FileName;
-            _imageSizeString = string.Format("Image: {0} x {1}", srcImage.Width, srcImage.Height);
+            _imageSizeString = string.Format("Image: {0} x {1}", _srcImage.Width, _srcImage.Height);
+
+            _srcImage.Dispose();
+            _srcImage = null;
 
             Cursor = Cursors.Default;
-            Application.DoEvents();
-
+            
             _animTimer.Enabled = true;
             _fpsTimer.Enabled = true;
             _animTimer.Start();
             _fpsTimer.Start();
-
         }
 
         /// <summary>
@@ -84,7 +102,7 @@ namespace CSRotoZoomer
             _timePreviousFrame = _timeCurrentFrame;
             _timeCurrentFrame = DateTime.Now;
 
-            _rotoZoomer.UpdateAndDraw();
+            _rotoZoomer.Update();
 
             Invalidate();
         }
