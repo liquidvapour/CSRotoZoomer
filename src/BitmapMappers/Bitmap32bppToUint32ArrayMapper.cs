@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace CSRotoZoomer
+namespace CSRotoZoomer.BitmapMappers
 {
-    public class Bitmap32BppToUint32ArrayMapper
+    public class Bitmap32BppToUint32ArrayMapper : IMapBitmapToInt32Array
     {
-        public unsafe void PopulateSourcePixelsFrom32bpp(Bitmap srcImage, IList<uint> sourcePixels)
+        public unsafe void Map(Bitmap srcImage, IList<uint> sourcePixels)
         {
             var srcData = srcImage.LockBits(
                 new Rectangle(0, 0, srcImage.Width, srcImage.Height), 

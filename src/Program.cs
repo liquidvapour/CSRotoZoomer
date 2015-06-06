@@ -7,8 +7,10 @@
 ///////////////////////////////////////////////////////////////////
 
 using System;
+using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
+using CSRotoZoomer.BitmapMappers;
 
 namespace CSRotoZoomer
 {
@@ -23,8 +25,28 @@ namespace CSRotoZoomer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException += Application_ThreadException;
-            BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper = new BitmapToUint32ArrayMapper();
-            Application.Run(new MainForm(new RotoZoomer(bitmapToUint32ArrayMapper)));
+
+            Application.Run(new MainForm(new RotoZoomer(CreateBitmapToUint32ArrayMapper())));
+        }
+
+        private static BitmapToUint32ArrayMapper CreateBitmapToUint32ArrayMapper()
+        {
+            return new BitmapToUint32ArrayMapper(new[]
+            {
+                new BitmapLoadStrategy {
+                    HasPixelFormatOf = x => 
+                        x == PixelFormat.Format32bppArgb ||
+                        x == PixelFormat.Format32bppPArgb ||
+                        x == PixelFormat.Format32bppRgb,
+                    UseMapperTo = new Bitmap32BppToUint32ArrayMapper()},
+                new BitmapLoadStrategy {
+                    HasPixelFormatOf = x => x == PixelFormat.Format8bppIndexed,
+                    UseMapperTo = new Bitmap8bppToUint32ArrayMapper()},
+                new BitmapLoadStrategy {
+                    HasPixelFormatOf = x => true,
+                    UseMapperTo = new DefaultBitmapToUint32Mapper()},
+
+            });
         }
 
         /// <summary>
