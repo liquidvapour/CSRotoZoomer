@@ -5,7 +5,38 @@ using System.Drawing.Imaging;
 
 namespace CSRotoZoomer
 {
-    public class RotoZoomer
+    public interface IRotoZoomer
+    {
+        double DeltaGamma { get; set; }
+        int ZoomCounter { get; }
+        int ZoomInMax { get; set; }
+        int ZoomOutMax { get; set; }
+        bool ZoomIn { get; }
+        double XZoomDelta { get; }
+        double YZoomDelta { get; }
+
+        /// <summary>
+        ///     Initializes the roto zoomer.
+        /// </summary>
+        void InitRotoZoomer(Bitmap srcImage);
+
+        /// <summary>
+        ///     Creates a new render canvas, which will be used to render the picture in for every frame.
+        /// </summary>
+        void CreateCanvas();
+
+        void Update(double deltaTimeInSeconds);
+
+        /// <summary>
+        ///     Rotate the rectangle which is used to read the sourcepixels from the source image.
+        /// </summary>
+        void Rotate(double dt);
+
+        void RenderUsing(Graphics graphics);
+        void ResizeCanvas(Rectangle clientRectangle);
+    }
+
+    public class RotoZoomer : IRotoZoomer
     {
         private int _canvasWidth, _canvasHeight;
         private Bitmap _renderCanvas;
@@ -27,8 +58,8 @@ namespace CSRotoZoomer
 
         public double DeltaGamma { get; set; }
         public int ZoomCounter { get; private set; }
-        public int ZoomInMax { get; private set; }
-        public int ZoomOutMax { get; private set; }
+        public int ZoomInMax { get; set; }
+        public int ZoomOutMax { get; set; }
         public bool ZoomIn { get; private set; }
         public double XZoomDelta { get; private set; }
         public double YZoomDelta { get; private set; }

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRotoZoomer", "src\CSRotoZoomer.csproj", "{12EBBDAC-DFAF-4518-9519-AE61BFF06E7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRotoZoomer", "src\CSRotoZoomer\CSRotoZoomer.csproj", "{12EBBDAC-DFAF-4518-9519-AE61BFF06E7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRotoZoomer.Tests", "src\CSRotoZoomer.Tests\CSRotoZoomer.Tests.csproj", "{3CDE2A95-D807-4896-9F18-C84107C3E2A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{12EBBDAC-DFAF-4518-9519-AE61BFF06E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12EBBDAC-DFAF-4518-9519-AE61BFF06E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12EBBDAC-DFAF-4518-9519-AE61BFF06E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CDE2A95-D807-4896-9F18-C84107C3E2A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CDE2A95-D807-4896-9F18-C84107C3E2A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CDE2A95-D807-4896-9F18-C84107C3E2A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CDE2A95-D807-4896-9F18-C84107C3E2A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

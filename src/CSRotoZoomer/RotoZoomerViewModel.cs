@@ -4,10 +4,10 @@ namespace CSRotoZoomer
 {
     public class RotoZoomerViewModel : INotifyPropertyChanged
     {
-        private readonly RotoZoomer _rotoZoomer;
+        private readonly IRotoZoomer _rotoZoomer;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public RotoZoomerViewModel(RotoZoomer rotoZoomer)
+        public RotoZoomerViewModel(IRotoZoomer rotoZoomer)
         {
             _rotoZoomer = rotoZoomer;
         }
@@ -21,6 +21,18 @@ namespace CSRotoZoomer
                 
                 _rotoZoomer.DeltaGamma = value;
                 OnPropertyChanged("DeltaGamma");
+            }
+        }
+
+        public int ZoomInMax
+        {
+            get { return _rotoZoomer.ZoomInMax; }
+            set
+            {
+                if (_rotoZoomer.ZoomInMax == value) return;
+
+                _rotoZoomer.ZoomInMax = value;
+                OnPropertyChanged("ZoomInMax");
             }
         }
 

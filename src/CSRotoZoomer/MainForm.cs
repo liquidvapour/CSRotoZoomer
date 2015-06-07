@@ -15,12 +15,12 @@ namespace CSRotoZoomer
 {
     public partial class MainForm : Form
     {
-        private readonly RotoZoomer _rotoZoomer;
+        private readonly IRotoZoomer _rotoZoomer;
         private string _fpsString, _canvasSizeString, _imageSizeString, _imageInfoString;
         private DateTime _timeCurrentFrame, _timePreviousFrame;
         private Bitmap _srcImage;
 
-        public MainForm(RotoZoomer rotoZoomer)
+        public MainForm(IRotoZoomer rotoZoomer)
         {
             InitializeComponent();
 
