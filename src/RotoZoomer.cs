@@ -7,11 +7,10 @@ namespace CSRotoZoomer
 {
     public class RotoZoomer
     {
-        private int _canvasWidth, _canvasHeight, _zoomCounter, _zoomInMax, _zoomOutMax, _imageWidth, _imageHeight;
+        private int _canvasWidth, _canvasHeight;
         private Bitmap _renderCanvas;
-        private bool _zoomIn;
         private double _gamma;
-        private double _xZoomDelta, _yZoomDelta;
+        private int _imageWidth, _imageHeight;
 
         // coordinate source.
         private readonly double[] _xSourceCoords = { -128, 128, -128 };
@@ -27,6 +26,12 @@ namespace CSRotoZoomer
         private bool _resetCanvas;
 
         public double DeltaGamma { get; set; }
+        public int ZoomCounter { get; private set; }
+        public int ZoomInMax { get; private set; }
+        public int ZoomOutMax { get; private set; }
+        public bool ZoomIn { get; private set; }
+        public double XZoomDelta { get; private set; }
+        public double YZoomDelta { get; private set; }
 
         /// <summary>
         ///     CTor
@@ -38,6 +43,18 @@ namespace CSRotoZoomer
 
             // deltaGamma value, controls rotation.
             DeltaGamma = 60.0;
+            // initialize our parameters.
+            ZoomCounter = 0;
+            ZoomIn = false;
+
+
+            // deltas for x and y zooming. If they're not the same the image gets stretched.
+            XZoomDelta = 2.0;
+            YZoomDelta = 1.0;
+
+            // zoom counter values when the zoom action (in/out) will swap. Give this different values for wicked results. 
+            ZoomInMax = 200;
+            ZoomOutMax = 300;
         }
 
 
@@ -52,18 +69,6 @@ namespace CSRotoZoomer
             _imageWidth = srcImage.Width;
             _imageHeight = srcImage.Height;
 
-            // initialize our parameters.
-            _zoomCounter = 0;
-            _zoomIn = false;
-
-
-            // deltas for x and y zooming. If they're not the same the image gets stretched.
-            _xZoomDelta = 2.0;
-            _yZoomDelta = 1.0;
-
-            // zoom counter values when the zoom action (in/out) will swap. Give this different values for wicked results. 
-            _zoomInMax = 200;
-            _zoomOutMax = 300;
 
             if ((_imageWidth == 0) || (_imageHeight == 0))
             {
@@ -72,12 +77,12 @@ namespace CSRotoZoomer
 
             double imageWidthD = _imageWidth;
             double imageHeightD = _imageHeight;
-            if (_xZoomDelta != 0)
+            if (XZoomDelta != 0)
             {
-                _zoomInMax = (int) (((imageWidthD/2.0)/_xZoomDelta) - 10.0);
+                ZoomInMax = (int) (((imageWidthD/2.0)/XZoomDelta) - 10.0);
             }
-            _zoomOutMax = _zoomInMax*5;
-            _yZoomDelta = (imageHeightD/imageWidthD)*_xZoomDelta;
+            ZoomOutMax = ZoomInMax*5;
+            YZoomDelta = (imageHeightD/imageWidthD)*XZoomDelta;
 
 
             _sourcePixels = _bitmapToUint32ArrayMapper.MapToUint32ArrayFrom(srcImage);
@@ -154,9 +159,9 @@ namespace CSRotoZoomer
         /// <param name="deltaTimeInSeconds"></param>
         private void Zoom(double deltaTimeInSeconds)
         {
-            var xZoomDeltaThisFrame = _xZoomDelta*deltaTimeInSeconds;
-            var yZoomDeltaThisFrame = _yZoomDelta*deltaTimeInSeconds;
-            if (_zoomIn)
+            var xZoomDeltaThisFrame = XZoomDelta*deltaTimeInSeconds;
+            var yZoomDeltaThisFrame = YZoomDelta*deltaTimeInSeconds;
+            if (ZoomIn)
             {
                 for (var i = 0; i < 3; i++)
                 {
@@ -177,10 +182,10 @@ namespace CSRotoZoomer
                         _ySourceCoords[i] -= yZoomDeltaThisFrame;
                     }
                 }
-                _zoomCounter++;
-                if (_zoomCounter > _zoomInMax)
+                ZoomCounter++;
+                if (ZoomCounter > ZoomInMax)
                 {
-                    _zoomIn = false;
+                    ZoomIn = false;
                 }
             }
             else
@@ -204,10 +209,10 @@ namespace CSRotoZoomer
                         _ySourceCoords[i] += yZoomDeltaThisFrame;
                     }
                 }
-                _zoomCounter--;
-                if (_zoomCounter < -_zoomOutMax)
+                ZoomCounter--;
+                if (ZoomCounter < -ZoomOutMax)
                 {
-                    _zoomIn = true;
+                    ZoomIn = true;
                 }
             }
         }

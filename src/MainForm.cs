@@ -30,7 +30,7 @@ namespace CSRotoZoomer
 
             _rotoZoomer = rotoZoomer;
 
-            bindingSource.DataSource = new RotoZoomerViewModel(_rotoZoomer);
+            _bindingSource.DataSource = new RotoZoomerViewModel(_rotoZoomer);
             
             _fpsString = string.Empty;
             _canvasSizeString = string.Empty;
@@ -40,6 +40,11 @@ namespace CSRotoZoomer
             _timePreviousFrame = _timeCurrentFrame;
 
             ResizeCanvas();
+        }
+
+        private RotoZoomerViewModel ViewModel
+        {
+            get { return (RotoZoomerViewModel)_bindingSource.DataSource; }
         }
 
         /// <summary>
@@ -110,6 +115,7 @@ namespace CSRotoZoomer
 
             _rotoZoomer.Update(dt);
 
+            ViewModel.OnUpdate();
             Invalidate();
         }
 

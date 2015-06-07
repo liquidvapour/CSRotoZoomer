@@ -24,6 +24,16 @@ namespace CSRotoZoomer
             }
         }
 
+        public int ZoomCounter
+        {
+            get { return _rotoZoomer.ZoomCounter; }
+        }
+
+        public void OnUpdate()
+        {
+            OnPropertyChanged("ZoomCounter");
+        }
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;

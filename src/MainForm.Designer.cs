@@ -43,16 +43,18 @@ namespace CSRotoZoomer
             this._imageSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._imageInfoLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._fpsTimer = new System.Windows.Forms.Timer(this.components);
-            this.pnlTools = new System.Windows.Forms.Panel();
-            this.tkbDeltaGama = new System.Windows.Forms.TrackBar();
-            this.lblDeltaGama = new System.Windows.Forms.Label();
-            this.txtDeltaGama = new System.Windows.Forms.TextBox();
-            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this._toolsPanel = new System.Windows.Forms.Panel();
+            this._zoomCounterTextBox = new System.Windows.Forms.TextBox();
+            this._zoomCounterLabel = new System.Windows.Forms.Label();
+            this._deltaGamaTextBox = new System.Windows.Forms.TextBox();
+            this._deltaGamaLabel = new System.Windows.Forms.Label();
+            this._deltaGamaTrackBar = new System.Windows.Forms.TrackBar();
+            this._bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this._mainMenu.SuspendLayout();
             this._statusBar.SuspendLayout();
-            this.pnlTools.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tkbDeltaGama)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).BeginInit();
+            this._toolsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._deltaGamaTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._bindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // _mainMenu
@@ -117,9 +119,9 @@ namespace CSRotoZoomer
             this._renderDestination.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this._renderDestination.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this._renderDestination.Location = new System.Drawing.Point(4, 34);
-            this._renderDestination.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this._renderDestination.Margin = new System.Windows.Forms.Padding(4);
             this._renderDestination.Name = "_renderDestination";
-            this._renderDestination.Size = new System.Drawing.Size(650, 556);
+            this._renderDestination.Size = new System.Drawing.Size(563, 556);
             this._renderDestination.TabIndex = 3;
             this._renderDestination.Visible = false;
             // 
@@ -182,46 +184,71 @@ namespace CSRotoZoomer
             this._fpsTimer.Interval = 500;
             this._fpsTimer.Tick += new System.EventHandler(this._fpsTimer_Tick);
             // 
-            // pnlTools
+            // _toolsPanel
             // 
-            this.pnlTools.Controls.Add(this.txtDeltaGama);
-            this.pnlTools.Controls.Add(this.lblDeltaGama);
-            this.pnlTools.Controls.Add(this.tkbDeltaGama);
-            this.pnlTools.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlTools.Location = new System.Drawing.Point(661, 28);
-            this.pnlTools.Name = "pnlTools";
-            this.pnlTools.Size = new System.Drawing.Size(200, 562);
-            this.pnlTools.TabIndex = 0;
+            this._toolsPanel.Controls.Add(this._zoomCounterTextBox);
+            this._toolsPanel.Controls.Add(this._zoomCounterLabel);
+            this._toolsPanel.Controls.Add(this._deltaGamaTextBox);
+            this._toolsPanel.Controls.Add(this._deltaGamaLabel);
+            this._toolsPanel.Controls.Add(this._deltaGamaTrackBar);
+            this._toolsPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this._toolsPanel.Location = new System.Drawing.Point(574, 28);
+            this._toolsPanel.Name = "_toolsPanel";
+            this._toolsPanel.Size = new System.Drawing.Size(287, 562);
+            this._toolsPanel.TabIndex = 0;
             // 
-            // tkbDeltaGama
+            // _zoomCounterTextBox
             // 
-            this.tkbDeltaGama.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.bindingSource, "DeltaGamma", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.tkbDeltaGama.Location = new System.Drawing.Point(3, 54);
-            this.tkbDeltaGama.Maximum = 360;
-            this.tkbDeltaGama.Name = "tkbDeltaGama";
-            this.tkbDeltaGama.Size = new System.Drawing.Size(185, 56);
-            this.tkbDeltaGama.TabIndex = 0;
+            this._zoomCounterTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._zoomCounterTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this._bindingSource, "ZoomCounter", true));
+            this._zoomCounterTextBox.Location = new System.Drawing.Point(123, 110);
+            this._zoomCounterTextBox.Name = "_zoomCounterTextBox";
+            this._zoomCounterTextBox.Size = new System.Drawing.Size(152, 22);
+            this._zoomCounterTextBox.TabIndex = 4;
             // 
-            // lblDeltaGama
+            // _zoomCounterLabel
             // 
-            this.lblDeltaGama.AutoSize = true;
-            this.lblDeltaGama.Location = new System.Drawing.Point(15, 29);
-            this.lblDeltaGama.Name = "lblDeltaGama";
-            this.lblDeltaGama.Size = new System.Drawing.Size(87, 17);
-            this.lblDeltaGama.TabIndex = 1;
-            this.lblDeltaGama.Text = "Delta Gama:";
+            this._zoomCounterLabel.AutoSize = true;
+            this._zoomCounterLabel.Location = new System.Drawing.Point(15, 113);
+            this._zoomCounterLabel.Name = "_zoomCounterLabel";
+            this._zoomCounterLabel.Size = new System.Drawing.Size(102, 17);
+            this._zoomCounterLabel.TabIndex = 3;
+            this._zoomCounterLabel.Text = "Zoom Counter:";
             // 
-            // txtDeltaGama
+            // _deltaGamaTextBox
             // 
-            this.txtDeltaGama.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource, "DeltaGamma", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.txtDeltaGama.Location = new System.Drawing.Point(108, 26);
-            this.txtDeltaGama.Name = "txtDeltaGama";
-            this.txtDeltaGama.Size = new System.Drawing.Size(80, 22);
-            this.txtDeltaGama.TabIndex = 2;
+            this._deltaGamaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._deltaGamaTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this._bindingSource, "DeltaGamma", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this._deltaGamaTextBox.Location = new System.Drawing.Point(123, 26);
+            this._deltaGamaTextBox.Name = "_deltaGamaTextBox";
+            this._deltaGamaTextBox.Size = new System.Drawing.Size(152, 22);
+            this._deltaGamaTextBox.TabIndex = 2;
             // 
-            // bindingSource
+            // _deltaGamaLabel
             // 
-            this.bindingSource.DataSource = typeof(CSRotoZoomer.RotoZoomerViewModel);
+            this._deltaGamaLabel.AutoSize = true;
+            this._deltaGamaLabel.Location = new System.Drawing.Point(15, 29);
+            this._deltaGamaLabel.Name = "_deltaGamaLabel";
+            this._deltaGamaLabel.Size = new System.Drawing.Size(87, 17);
+            this._deltaGamaLabel.TabIndex = 1;
+            this._deltaGamaLabel.Text = "Delta Gama:";
+            // 
+            // _deltaGamaTrackBar
+            // 
+            this._deltaGamaTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._deltaGamaTrackBar.DataBindings.Add(new System.Windows.Forms.Binding("Value", this._bindingSource, "DeltaGamma", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this._deltaGamaTrackBar.Location = new System.Drawing.Point(3, 54);
+            this._deltaGamaTrackBar.Maximum = 720;
+            this._deltaGamaTrackBar.Name = "_deltaGamaTrackBar";
+            this._deltaGamaTrackBar.Size = new System.Drawing.Size(272, 56);
+            this._deltaGamaTrackBar.TabIndex = 0;
+            // 
+            // _bindingSource
+            // 
+            this._bindingSource.DataSource = typeof(CSRotoZoomer.RotoZoomerViewModel);
             // 
             // MainForm
             // 
@@ -229,11 +256,11 @@ namespace CSRotoZoomer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(861, 612);
             this.Controls.Add(this._renderDestination);
-            this.Controls.Add(this.pnlTools);
+            this.Controls.Add(this._toolsPanel);
             this.Controls.Add(this._mainMenu);
             this.Controls.Add(this._statusBar);
             this.MainMenuStrip = this._mainMenu;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "C# RotoZoomer";
@@ -243,10 +270,10 @@ namespace CSRotoZoomer
             this._mainMenu.PerformLayout();
             this._statusBar.ResumeLayout(false);
             this._statusBar.PerformLayout();
-            this.pnlTools.ResumeLayout(false);
-            this.pnlTools.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tkbDeltaGama)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();
+            this._toolsPanel.ResumeLayout(false);
+            this._toolsPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._deltaGamaTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._bindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -268,11 +295,13 @@ namespace CSRotoZoomer
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.Timer _fpsTimer;
-        private System.Windows.Forms.BindingSource bindingSource;
-        private System.Windows.Forms.Panel pnlTools;
-        private System.Windows.Forms.TrackBar tkbDeltaGama;
-        private System.Windows.Forms.TextBox txtDeltaGama;
-        private System.Windows.Forms.Label lblDeltaGama;
+        private System.Windows.Forms.BindingSource _bindingSource;
+        private System.Windows.Forms.Panel _toolsPanel;
+        private System.Windows.Forms.TrackBar _deltaGamaTrackBar;
+        private System.Windows.Forms.TextBox _deltaGamaTextBox;
+        private System.Windows.Forms.Label _deltaGamaLabel;
+        private System.Windows.Forms.TextBox _zoomCounterTextBox;
+        private System.Windows.Forms.Label _zoomCounterLabel;
 	}
 }
 
