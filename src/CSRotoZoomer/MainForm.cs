@@ -77,6 +77,7 @@ namespace CSRotoZoomer
         {
             _rotoZoomer.InitRotoZoomer(_srcImage);
 
+            ViewModel.OnUpdate();
             
             // Called on another thread so needs to BeginInvoke starting 
             // animation so it happens on the UI thread.

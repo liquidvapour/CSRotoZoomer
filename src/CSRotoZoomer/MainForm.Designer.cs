@@ -49,11 +49,15 @@ namespace CSRotoZoomer
             this._deltaGamaTextBox = new System.Windows.Forms.TextBox();
             this._deltaGamaLabel = new System.Windows.Forms.Label();
             this._deltaGamaTrackBar = new System.Windows.Forms.TrackBar();
+            this._zoomInMaxTextBox = new System.Windows.Forms.TextBox();
+            this._zoomInMaxLabel = new System.Windows.Forms.Label();
+            this._zoomInMaxTrackBar = new System.Windows.Forms.TrackBar();
             this._bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this._mainMenu.SuspendLayout();
             this._statusBar.SuspendLayout();
             this._toolsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._deltaGamaTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._zoomInMaxTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._bindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -186,6 +190,9 @@ namespace CSRotoZoomer
             // 
             // _toolsPanel
             // 
+            this._toolsPanel.Controls.Add(this._zoomInMaxTextBox);
+            this._toolsPanel.Controls.Add(this._zoomInMaxLabel);
+            this._toolsPanel.Controls.Add(this._zoomInMaxTrackBar);
             this._toolsPanel.Controls.Add(this._zoomCounterTextBox);
             this._toolsPanel.Controls.Add(this._zoomCounterLabel);
             this._toolsPanel.Controls.Add(this._deltaGamaTextBox);
@@ -246,6 +253,36 @@ namespace CSRotoZoomer
             this._deltaGamaTrackBar.Size = new System.Drawing.Size(272, 56);
             this._deltaGamaTrackBar.TabIndex = 0;
             // 
+            // _zoomInMaxTextBox
+            // 
+            this._zoomInMaxTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._zoomInMaxTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this._bindingSource, "ZoomInMax", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this._zoomInMaxTextBox.Location = new System.Drawing.Point(123, 145);
+            this._zoomInMaxTextBox.Name = "_zoomInMaxTextBox";
+            this._zoomInMaxTextBox.Size = new System.Drawing.Size(152, 22);
+            this._zoomInMaxTextBox.TabIndex = 7;
+            // 
+            // _zoomInMaxLabel
+            // 
+            this._zoomInMaxLabel.AutoSize = true;
+            this._zoomInMaxLabel.Location = new System.Drawing.Point(15, 148);
+            this._zoomInMaxLabel.Name = "_zoomInMaxLabel";
+            this._zoomInMaxLabel.Size = new System.Drawing.Size(92, 17);
+            this._zoomInMaxLabel.TabIndex = 6;
+            this._zoomInMaxLabel.Text = "Zoom In Max:";
+            // 
+            // _zoomInMaxTrackBar
+            // 
+            this._zoomInMaxTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._zoomInMaxTrackBar.DataBindings.Add(new System.Windows.Forms.Binding("Value", this._bindingSource, "ZoomInMax", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this._zoomInMaxTrackBar.Location = new System.Drawing.Point(3, 173);
+            this._zoomInMaxTrackBar.Maximum = 720;
+            this._zoomInMaxTrackBar.Name = "_zoomInMaxTrackBar";
+            this._zoomInMaxTrackBar.Size = new System.Drawing.Size(272, 56);
+            this._zoomInMaxTrackBar.TabIndex = 5;
+            // 
             // _bindingSource
             // 
             this._bindingSource.DataSource = typeof(CSRotoZoomer.RotoZoomerViewModel);
@@ -273,6 +310,7 @@ namespace CSRotoZoomer
             this._toolsPanel.ResumeLayout(false);
             this._toolsPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this._deltaGamaTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._zoomInMaxTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._bindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -302,6 +340,9 @@ namespace CSRotoZoomer
         private System.Windows.Forms.Label _deltaGamaLabel;
         private System.Windows.Forms.TextBox _zoomCounterTextBox;
         private System.Windows.Forms.Label _zoomCounterLabel;
+        private System.Windows.Forms.TextBox _zoomInMaxTextBox;
+        private System.Windows.Forms.Label _zoomInMaxLabel;
+        private System.Windows.Forms.TrackBar _zoomInMaxTrackBar;
 	}
 }
 
