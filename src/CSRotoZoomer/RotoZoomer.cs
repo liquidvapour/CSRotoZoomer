@@ -12,7 +12,7 @@ namespace CSRotoZoomer
         int ZoomInMax { get; set; }
         int ZoomOutMax { get; set; }
         bool ZoomIn { get; }
-        double XZoomDelta { get; }
+        double XZoomDelta { get; set; }
         double YZoomDelta { get; }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace CSRotoZoomer
         public int ZoomInMax { get; set; }
         public int ZoomOutMax { get; set; }
         public bool ZoomIn { get; private set; }
-        public double XZoomDelta { get; private set; }
+        public double XZoomDelta { get; set; }
         public double YZoomDelta { get; private set; }
 
         /// <summary>

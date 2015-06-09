@@ -2,9 +2,13 @@
 
 namespace CSRotoZoomer.Tests
 {
-    public class RotoZoomerViewModelTestsBase : 
-        PropertyChangedTestsBase<RotoZoomerViewModel, IRotoZoomer>
+    public abstract class RotoZoomerViewModelTestsBase<TTestValue> : 
+        PropertyChangedAutoPropertyTestsBase<RotoZoomerViewModel, IRotoZoomer, TTestValue>
     {
+        protected RotoZoomerViewModelTestsBase(string propertyName, TTestValue testValue) : base(propertyName, testValue)
+        {
+        }
+
         protected override RotoZoomerViewModel GetViewModel()
         {
             return new RotoZoomerViewModel(Model);

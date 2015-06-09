@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 
 namespace CSRotoZoomer
@@ -12,7 +13,7 @@ namespace CSRotoZoomer
             _rotoZoomer = rotoZoomer;
         }
 
-        public int DeltaGamma
+        public double DeltaGamma
         {
             get { return (int) _rotoZoomer.DeltaGamma; }
             set
@@ -40,6 +41,19 @@ namespace CSRotoZoomer
         {
             get { return _rotoZoomer.ZoomCounter; }
         }
+
+        public double XZoomDelta
+        {
+            get { return _rotoZoomer.XZoomDelta; }
+            set
+            {
+                if (Math.Abs(_rotoZoomer.XZoomDelta - value) < 0.0001) return;
+                
+                _rotoZoomer.XZoomDelta = value;
+                OnPropertyChanged("XZoomDelta");
+            }
+        }
+    
 
         public void OnUpdate()
         {

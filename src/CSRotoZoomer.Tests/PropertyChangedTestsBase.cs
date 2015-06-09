@@ -33,7 +33,7 @@ namespace CSRotoZoomer.Tests
         protected void AssertPropertyChangedNotRaisedWhenPropertyAlreadySetToValue<TValue>(
             TValue value, 
             Function<TModel, TValue> prop, 
-            Action<TViewModel, TValue> action, 
+            Action<TViewModel> action, 
             string propertyName)
         {
             Model.Stub(prop).Return(value);
@@ -43,7 +43,7 @@ namespace CSRotoZoomer.Tests
             ViewModel.PropertyChanged += 
                 (s, a) => called = a.PropertyName == propertyName;
 
-            action(ViewModel, value);
+            action(ViewModel);
 
             Assert.IsFalse(
                 called, 
@@ -54,7 +54,7 @@ namespace CSRotoZoomer.Tests
 
         protected void WhenPropertySetWillDelegate(
             Action<TViewModel> when, 
-            System.Func<TModel, object> wasCalled)
+            Action<TModel> wasCalled)
         {
             when(ViewModel);
             Model.AssertWasCalled(wasCalled);
@@ -62,13 +62,13 @@ namespace CSRotoZoomer.Tests
 
         protected void WhenAlreadySetWillNotDelegate<TValue>(
             Function<TModel, TValue> prop, 
-            Action<TValue> action, 
+            Action<TViewModel> action, 
             TValue value, 
-            System.Func<TModel, object> wasCalled)
+            Action<TModel> wasCalled)
         {
             Model.Stub(prop).Return(value);
 
-            action(value);
+            action(ViewModel);
 
             Model.AssertWasNotCalled(wasCalled);
         }

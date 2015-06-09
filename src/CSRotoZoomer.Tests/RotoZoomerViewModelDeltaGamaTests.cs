@@ -3,53 +3,32 @@ using Rhino.Mocks;
 
 namespace CSRotoZoomer.Tests
 {
-
     [TestFixture]
-    public class RotoZoomerViewModelDeltaGamaTests : RotoZoomerViewModelTestsBase
+    public class RotoZoomerViewModelDeltaGamaTests : RotoZoomerViewModelTestsBase<double>
     {
-        [Test]
-        public void when_delta_gamma_set_will_file_property_changed_event()
+        public RotoZoomerViewModelDeltaGamaTests()
+            : base("DeltaGamma", 100)
         {
-            AssertPropertyChangedRaisedFor(vm => vm.DeltaGamma = 100, "DeltaGamma");
         }
 
-        [Test]
-        public void when_delta_gamma_set_will_delegate_to_roto_zoomer()
+        protected override double GetViewModelProperty(RotoZoomerViewModel viewModel)
         {
-            const int testValue = 100;
-            WhenPropertySetWillDelegate(
-                vm => vm.DeltaGamma = testValue,
-                m => m.DeltaGamma = testValue);
+            return viewModel.DeltaGamma;
         }
 
-        [Test]
-        public void when_delta_gamma_set_to_existing_value_will_not_set_again()
+        protected override void SetViewModelProperty(RotoZoomerViewModel viewModel)
         {
-
-            WhenAlreadySetWillNotDelegate(
-                m => m.DeltaGamma,
-                value => ViewModel.DeltaGamma = (int)value,
-                100,
-                m => m.DeltaGamma = 100.0);
-
+            viewModel.DeltaGamma = TestValue;
         }
 
-        [Test]
-        public void when_delta_gamma_set_to_existing_value_will_not_raise_property_changed()
+        protected override object GetModelProperty(IRotoZoomer model)
         {
-            AssertPropertyChangedNotRaisedWhenPropertyAlreadySetToValue(
-                100,
-                v => v.DeltaGamma,
-                (vm, value) => vm.DeltaGamma = (int)value,
-                "DeltaGamma");
+            return model.DeltaGamma;
         }
 
-        [Test]
-        public void when_getting_delta_gamma_should_delegate_to_roto_zoomer()
+        protected override void SetModelProperty(IRotoZoomer model)
         {
-            var result = ViewModel.DeltaGamma;
-
-            Model.AssertWasCalled(m => m.DeltaGamma);
+            model.DeltaGamma = TestValue;
         }
     }
 }
