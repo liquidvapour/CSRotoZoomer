@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace CSRotoZoomer
 {
-    public class BitmapToUint32ArrayMapper
+    public class BitmapToUint32ArrayMapper : IMap<Bitmap, uint[]>
     {
         private readonly IEnumerable<BitmapLoadStrategy> _strategies;
 

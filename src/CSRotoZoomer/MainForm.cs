@@ -75,7 +75,7 @@ namespace CSRotoZoomer
 
         private void InitRotoZoomer(object _)
         {
-            _rotoZoomer.InitRotoZoomer(_srcImage);
+            _rotoZoomer.Initialize(_srcImage);
 
             ViewModel.OnUpdate();
             

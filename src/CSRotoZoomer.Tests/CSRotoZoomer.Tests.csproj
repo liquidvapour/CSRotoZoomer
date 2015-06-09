@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="images\PlaceHolder.cs" />
     <Compile Include="PropertyChangedTestsBase.cs" />
+    <Compile Include="RotoZoomerTests.cs" />
     <Compile Include="RotoZoomerViewModelDeltaGamaTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotoZoomerViewModelTestsBase.cs" />
@@ -61,6 +64,9 @@
       <Project>{12EBBDAC-DFAF-4518-9519-AE61BFF06E7E}</Project>
       <Name>CSRotoZoomer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\Test.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

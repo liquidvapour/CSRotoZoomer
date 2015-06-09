@@ -51,6 +51,7 @@
     <Compile Include="BitmapToUint32ArrayMapper.cs" />
     <Compile Include="EnumerableExtentions.cs" />
     <Compile Include="Futures.cs" />
+    <Compile Include="IMap.cs" />
     <Compile Include="IMapBitmapToInt32Array.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

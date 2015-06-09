@@ -18,12 +18,7 @@ namespace CSRotoZoomer
         /// <summary>
         ///     Initializes the roto zoomer.
         /// </summary>
-        void InitRotoZoomer(Bitmap srcImage);
-
-        /// <summary>
-        ///     Creates a new render canvas, which will be used to render the picture in for every frame.
-        /// </summary>
-        void CreateCanvas();
+        void Initialize(Bitmap srcImage);
 
         void Update(double deltaTimeInSeconds);
 
@@ -52,7 +47,7 @@ namespace CSRotoZoomer
         private readonly double[] _yDestinationCoords = { -64, -64, 64 };
 
         private uint[] _sourcePixels;
-        private readonly BitmapToUint32ArrayMapper _bitmapToUint32ArrayMapper;
+        private readonly IMap<Bitmap, uint[]> _bitmapToUint32ArrayMapper;
         private Rectangle _renderDestination;
         private bool _resetCanvas;
 
@@ -68,7 +63,7 @@ namespace CSRotoZoomer
         ///     CTor
         /// </summary>
         /// <param name="bitmapToUint32ArrayMapper"></param>
-        public RotoZoomer(BitmapToUint32ArrayMapper bitmapToUint32ArrayMapper)
+        public RotoZoomer(IMap<Bitmap, uint[]> bitmapToUint32ArrayMapper)
         {
             _bitmapToUint32ArrayMapper = bitmapToUint32ArrayMapper;
 
@@ -88,18 +83,12 @@ namespace CSRotoZoomer
             ZoomOutMax = 300;
         }
 
-
-        /// <summary>
-        ///     Initializes the roto zoomer.
-        /// </summary>
-        public void InitRotoZoomer(Bitmap srcImage)
+        public void Initialize(Bitmap srcImage)
         {
             CreateCanvas();
 
-            // load bitmap specified by the user.
             _imageWidth = srcImage.Width;
             _imageHeight = srcImage.Height;
-
 
             if ((_imageWidth == 0) || (_imageHeight == 0))
             {
@@ -114,7 +103,6 @@ namespace CSRotoZoomer
             }
             ZoomOutMax = ZoomInMax*5;
             YZoomDelta = (imageHeightD/imageWidthD)*XZoomDelta;
-
 
             _sourcePixels = _bitmapToUint32ArrayMapper.MapToUint32ArrayFrom(srcImage);
 
@@ -144,8 +132,10 @@ namespace CSRotoZoomer
         /// <summary>
         ///     Creates a new render canvas, which will be used to render the picture in for every frame.
         /// </summary>
-        public void CreateCanvas()
+        private void CreateCanvas()
         {
+            if (_renderDestination == Rectangle.Empty) throw new InvalidOperationException("Please call ResizeCanval before Initializing.");
+
             if (_renderCanvas != null)
             {
                 _renderCanvas.Dispose();
